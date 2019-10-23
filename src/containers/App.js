@@ -3,6 +3,7 @@ import classes from "./App.module.css";
 import Persons from "../components/Persons/Persons";
 import Cockpit from "../components/Cockpit/Cockpit";
 
+
 const App = props => {
   const [personState, setPersonState] = useState({
     persons: [
@@ -13,6 +14,10 @@ const App = props => {
   });
 
   const [showPersonState, setShowPersonState] = useState({
+    show: true
+  });
+
+  const [showCockpitState, setCockpitState] = useState({
     show: true
   });
 
@@ -46,20 +51,20 @@ const App = props => {
     setShowPersonState({
       show: !showPersonState.show
     });
-  };
+  }
 
   const deletePersonHandler = personIndex => {
     const persons = [...personState.persons];
     persons.splice(personIndex, 1);
     setPersonState({ persons: persons });
-  };
+  }
 
 
   let persons = null;
 
   if (showPersonState.show) {
 
-    // react 16+ return list data
+    // react 16+ return list data support jsx 
     persons = <Persons
           persons={personState.persons}
           Clicked={deletePersonHandler}
@@ -106,12 +111,18 @@ const App = props => {
 
   return (
     <div className={classes.App}>
-      <Cockpit
+      <button onClick={()=>{ setCockpitState({show: !showCockpitState.show}) }}>Toggle Cockpit</button>
+
+      {
+        showCockpitState.show ? 
+        <Cockpit
         switchName={switchNamehandler}
         togglePerson={togglePersonHandler}
         showPerson={showPersonState.show}
         persons={personState.persons}
-      />
+      /> : null
+      }
+      
       
       {persons}
     </div>

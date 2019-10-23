@@ -1,8 +1,19 @@
 
-import React from "react";
+import React, {useEffect} from "react";
 import Classes from "./Cockpit.module.css";
 
-const cockpit = props => {
+const Cockpit = (props) => {
+
+  useEffect(() => {
+
+    console.log('[Cockpit.js] call useEffect...');
+ // run when props.persons change or update. this is call control useEffect behaviour
+ // if we want to run useEffect only first time pass empty array in second argument
+
+ return ()=>{
+  console.log('[Cockpit.js] clean useEffect...');
+ };
+  },[props.persons]);
 
    let btnClass="";
 
@@ -34,4 +45,4 @@ const cockpit = props => {
   );
 };
 
-export default cockpit;
+export default Cockpit;
