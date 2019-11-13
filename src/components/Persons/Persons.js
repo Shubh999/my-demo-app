@@ -1,7 +1,8 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import Person from "./Person/Person";
 
-class Persons extends Component {
+
+class Persons extends PureComponent {
   
   static getDerivedStateFromProps(props, state) {
     console.log("[Persons.js] getDerivedStateFromProps");
@@ -16,11 +17,17 @@ class Persons extends Component {
     return prevProps;
   }
 
-  shouldComponentUpdate(nextProps,nextState){
-    console.log('[Persons.js] shouldComponentUpdate');
-    console.log(nextProps);
-    return true;
-  }
+  // shouldComponentUpdate(nextProps,nextState){
+  //   if(nextProps.persons !== this.props.persons){
+  //     console.log('[Persons.js] shouldComponentUpdate');
+  //     console.log(nextProps);
+  //     return true;
+  //   }
+  //   else{
+  //     return false;
+  //   }
+    
+  // }
 
   componentWillUnmount(){
     console.log('[Persons.js] componentWillUnmount');
@@ -37,6 +44,7 @@ class Persons extends Component {
   // componentWillMount(){
   //   console.log('[Persons.js] componentWillMount');
   // }
+  
 
   render() {
     return this.props.persons.map((person, index) => {

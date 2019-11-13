@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import classes from "./App.module.css";
 import Persons from "../components/Persons/Persons";
 import Cockpit from "../components/Cockpit/Cockpit";
-
+import withClass from "../hoc/withClass";
+import AuthContext from "../context/auth-context";
 
 const App = props => {
   const [personState, setPersonState] = useState({
     persons: [
-      { Id: "1", Name: "Shubham", Age: "27" },
-      { Id: "2", Name: "Santosh", Age: "29" },
-      { Id: "3", Name: "Aman", Age: "29" }
+      { Id: "1", Name: "Shubham", Age: 27 },
+      { Id: "2", Name: "Santosh", Age: 29 },
+      { Id: "3", Name: "Aman", Age: 29 }
     ]
   });
 
@@ -21,12 +22,22 @@ const App = props => {
     show: true
   });
 
+  const [showAuthenticationState, setAuthenticationState] = useState({
+    isAuthenticated: false
+  });
+
+  const loginHandler = () => {
+    setAuthenticationState({
+      isAuthenticated: !showAuthenticationState.isAuthenticated
+    });
+  };
+
   const switchNamehandler = (name, age) => {
     setPersonState({
       persons: [
         { Name: name, Age: age },
-        { Name: "Santosh", Age: "28" },
-        { Name: "Aman", Age: "29" }
+        { Name: "Santosh", Age: 28 },
+        { Name: "Aman", Age: 29 }
       ]
     });
   };
@@ -51,27 +62,28 @@ const App = props => {
     setShowPersonState({
       show: !showPersonState.show
     });
-  }
+  };
 
   const deletePersonHandler = personIndex => {
     const persons = [...personState.persons];
     persons.splice(personIndex, 1);
     setPersonState({ persons: persons });
-  }
-
+  };
 
   let persons = null;
 
   if (showPersonState.show) {
+    // react 16+ return list data support jsx
+    persons = (
+      <Persons
+        persons={personState.persons}
+        Clicked={deletePersonHandler}
+        Changed={nameChangehandler}
+      />
+    );
 
-    // react 16+ return list data support jsx 
-    persons = <Persons
-          persons={personState.persons}
-          Clicked={deletePersonHandler}
-          Changed={nameChangehandler}
-        />
-
-        {/*personState.persons.map((person, index) => {
+    {
+      /*personState.persons.map((person, index) => {
           return (
             <Person
               key={person.Id}
@@ -83,9 +95,11 @@ const App = props => {
               }}
             ></Person>
           );
-        })*/}
+        })*/
+    }
 
-        {/* <Person
+    {
+      /* <Person
           Name={personState.persons[0].Name}
           Age={personState.persons[0].Age}
           Click={switchNamehandler.bind(this, "Shubham!!!", "28")}
@@ -105,28 +119,44 @@ const App = props => {
           Age={personState.persons[2].Age}
         >
           My Hobbies: Dancing
-        </Person> */}
-      
+        </Person> */
+    }
   }
 
   return (
-    <div className={classes.App}>
-      <button onClick={()=>{ setCockpitState({show: !showCockpitState.show}) }}>Toggle Cockpit</button>
+    <Fragment>
+      <button
+        onClick={() => {
+          setCockpitState({ show: !showCockpitState.show });
+        }}
+      >
+        Toggle Cockpit
+      </button>
 
-      {
-        showCockpitState.show ? 
-        <Cockpit
-        switchName={switchNamehandler}
-        togglePerson={togglePersonHandler}
-        showPerson={showPersonState.show}
-        persons={personState.persons}
-      /> : null
-      }
-      
-      
-      {persons}
-    </div>
+      <AuthContext.Provider value={{
+        authenticated: showAuthenticationState.isAuthenticated,
+        Login: loginHandler
+      }}>
+
+        {showCockpitState.show ? (
+          <Cockpit
+            switchName={switchNamehandler}
+            togglePerson={togglePersonHandler}
+            showPerson={showPersonState.show}
+            personLength={personState.persons.length}
+          />
+        ) : null}
+
+        {persons}
+      </AuthContext.Provider>
+    </Fragment>
+
+    // <WithClass classes={classes.App}>
+    // </WithClass>
+
+    // <div className={classes.App}>
+    // </div>
   );
 };
 
-export default App;
+export default withClass(App, classes.App);
