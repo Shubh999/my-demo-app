@@ -1,31 +1,37 @@
 import React, { Component } from "react";
-import Aux from '../../../hoc/Auxiliary';
+import Aux from "../../../hoc/Auxiliary";
 import classes from "./Person.module.css";
-import withClass from '../../../hoc/withClass';
-import PropTypes from 'prop-types';
-import AuthContext from '../../../context/auth-context';
-
-
+import withClass from "../../../hoc/withClass";
+import PropTypes from "prop-types";
+import AuthContext from "../../../context/auth-context";
 
 class Person extends Component {
-
-  constructor(props){
-   super(props);
-   this.inputElement=React.createRef();
+  constructor(props) {
+    super(props);
+    this.inputElement = React.createRef();
   }
 
- componentDidMount(){
-   this.inputElement.current.focus();
- }
+  componentDidMount() {
+    this.inputElement.current.focus();
+  }
 
+  static contextType = AuthContext;
 
   render() {
     return (
       <Aux>
+        {// this is the way of use Context defined in React 16.6
+        this.context.authenticated ? (
+          <p>Authenticated !!!</p>
+        ) : (
+          <p>Please Log In</p>
+        )}
+
+        {/* This is the way to use Context before React 16.6
         <AuthContext.Consumer>
           {(context)=>context.authenticated? <p>Authenticated !!!</p> : <p>Please Log In</p>}
-        </AuthContext.Consumer>
-        
+        </AuthContext.Consumer> */}
+
         <p onClick={this.props.Click}>
           I'm {this.props.Name} and I am {this.props.Age} old!
         </p>
@@ -34,23 +40,23 @@ class Person extends Component {
           type="text"
           onChange={this.props.Changed}
           value={this.props.Name}
-         // ref={(inputEle)=>{this.inputElement=inputEle}}
-         ref={this.inputElement}
+          // ref={(inputEle)=>{this.inputElement=inputEle}}
+          ref={this.inputElement}
         ></input>
       </Aux>
       // <div className={classes.Person}>
-        
+
       // </div>
     );
   }
 }
 
-Person.propTypes={
+Person.propTypes = {
   Name: PropTypes.string,
   Age: PropTypes.number,
   Click: PropTypes.func,
   Changed: PropTypes.func
-}
+};
 
 // class Person extends Component {
 //   render() {
@@ -80,4 +86,4 @@ Person.propTypes={
 //     </div>);
 // }
 
-export default withClass(Person,classes.Person);
+export default withClass(Person, classes.Person);

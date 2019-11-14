@@ -1,9 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useRef,useContext } from "react";
 import Classes from "./Cockpit.module.css";
 import AuthContext from "../../context/auth-context";
 
 const Cockpit = props => {
-  const togglePersonRefs = React.createRef();
+  // use both way to use Refs in function component
+  //const togglePersonRefs = React.createRef();
+  const togglePersonRefs = useRef(null);
+
+  //React hooks
+  const Context=useContext(AuthContext);
 
   useEffect(() => {
     togglePersonRefs.current.click();
@@ -32,6 +37,8 @@ const Cockpit = props => {
     assignedClasses.push(Classes.bold);
   }
 
+
+
   return (
     <div className={Classes.Cockpit}>
       <h1>Hi, I am React App</h1>
@@ -50,10 +57,14 @@ const Cockpit = props => {
       >
         Toggle Persons
       </button>
-      <AuthContext.Consumer>
+
+      {<button onClick={Context.Login}>Log In</button>}
+
+      {/* This is the way to use Context before React 16.6
+       <AuthContext.Consumer>
         {(context)=> <button onClick={context.Login}>Log In</button>}
         
-      </AuthContext.Consumer>
+      </AuthContext.Consumer> */}
     </div>
   );
 };
